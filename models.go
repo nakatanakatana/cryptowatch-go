@@ -56,7 +56,7 @@ type OrderBook struct {
 	Bids []Book `json:"bids"`
 }
 
-type OHLC map[string][]OHLCSummary
+type OHLC map[int64][]OHLCSummary
 
 type OHLCSummary struct {
 	CloseTimestamp int64

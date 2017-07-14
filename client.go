@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
+	"strconv"
 )
 
 const (
@@ -156,6 +157,10 @@ func (c *CryptwatchClient) OHLC(m Market, params OHLCParams) (*OHLC, error) {
 	results := result.(map[string]interface{})
 	OHLC := OHLC{}
 	for key, value := range results {
+		ikey, err := strconv.Atoi(key)
+		if err != nil {
+			return nil, err
+		}
 		values := value.([]interface{})
 		summaries := make([]OHLCSummary, len(values))
 		for i, v := range values {
@@ -170,7 +175,7 @@ func (c *CryptwatchClient) OHLC(m Market, params OHLCParams) (*OHLC, error) {
 				Volume:         vs[5].(float64),
 			}
 		}
-		OHLC[key] = summaries
+		OHLC[int64(ikey)] = summaries
 	}
 	return &OHLC, nil
 }
