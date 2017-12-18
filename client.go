@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
-	"strconv"
 )
 
 const (
