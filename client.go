@@ -2,6 +2,8 @@ package cryptowatch
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -28,13 +30,14 @@ func (c *CryptwatchClient) Get(resourcePath string, params url.Values) (interfac
 	}
 	defer resp.Body.Close()
 	result := map[string]interface{}{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	err = mapstructure.Decode(result["allowance"], &c.Allowance)
-	if err != nil {
+	if err := mapstructure.Decode(result["allowance"], &c.Allowance); err != nil {
 		return nil, err
+	}
+	if err, ok := result["error"].(string); ok {
+		return nil, errors.New(fmt.Sprintf("backend error: '%s'", err))
 	}
 	return result["result"], nil
 }
